@@ -23,7 +23,10 @@ export default function RootLayout({
           forcedTheme="dark"
           disableTransitionOnChange
         >
-          {children}
+          {/*Header */}
+          <main className="bg-slate-900 min-h-screen text-white overflow-x-hidden">
+            {children}
+          </main>
         </ThemeProvider>
       </body>
     </html>
