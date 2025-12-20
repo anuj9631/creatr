@@ -9,6 +9,7 @@
  */
 
 import type * as authconfig from "../authconfig.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -18,6 +19,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   authconfig: typeof authconfig;
+  users: typeof users;
 }>;
 
 /**
