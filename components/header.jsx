@@ -22,7 +22,8 @@ const Header = () => {
 
   return (
     <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-3xl px-4">
-      <div className="backdrop-blur-md bg-white/10 border border-white/20 rounded-full px-6 py-3 flex justify-between">
+      <div className="relative backdrop-blur-md bg-white/10 border border-white/20 rounded-full px-6 py-3 flex items-center">
+
         <Link href={isAuthenticated ? "/feed" : "/"} className="flex-shrink-0">
           <Image
             src="/logo.png"
@@ -33,6 +34,7 @@ const Header = () => {
           />
         </Link>
 
+        {/* Navigation for landing page only - Hidden on mobile to save space */}
         {path === "/" && (
           <div className="hidden lg:flex space-x-6 flex-1 justify-center">
             <Link
@@ -50,17 +52,20 @@ const Header = () => {
           </div>
         )}
         
+        {/* Auth Actions */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+
          <SignedIn>
-          <Link href="/dashboard">
-          <Button variant="outline" className="hidden sm:flex" size="sm">
-             <LayoutDashboard className="h-4 w-4"/>
-             <span className="hidden md:inline ml-2">Dashboard</span>
-          </Button>
-          
-          </Link>
+           {/* Show Dashboard link on feed page */}
+            {path === "/feed" && (
+              <Link href="/dashboard">
+                <Button variant="outline" className="hidden sm:flex" size="sm">
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span className="hidden md:inline ml-2">Dashboard</span>
+                </Button>
+              </Link>
 
-
+            )}
           <UserButton />
         </SignedIn>
 
