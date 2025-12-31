@@ -22,7 +22,8 @@ const Header = () => {
 
   return (
     <header className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-3xl px-4">
-      <div className="relative backdrop-blur-md bg-white/10 border border-white/20 rounded-full px-6 py-3 flex items-center">
+      <div className="relative backdrop-blur-md bg-white/10 border border-white/20 rounded-full px-6 py-3 flex items-center justify-between">
+
 
         <Link href={isAuthenticated ? "/feed" : "/"} className="flex-shrink-0">
           <Image
@@ -35,8 +36,9 @@ const Header = () => {
         </Link>
 
         {/* Navigation for landing page only - Hidden on mobile to save space */}
-        {path === "/" && (
-          <div className="hidden lg:flex space-x-6 flex-1 justify-center">
+     {path === "/" && (
+  <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 space-x-6">
+
             <Link
               href="#features"
               className="text-white font-medium transition-all duration-300 hover:text-purple-300 cursor-pointer"
@@ -55,31 +57,29 @@ const Header = () => {
         {/* Auth Actions */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
 
-         <SignedIn>
-           {/* Show Dashboard link on feed page */}
-            {path === "/feed" && (
-              <Link href="/dashboard">
-                <Button variant="outline" className="hidden sm:flex" size="sm">
-                  <LayoutDashboard className="h-4 w-4" />
-                  <span className="hidden md:inline ml-2">Dashboard</span>
-                </Button>
-              </Link>
+        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+  <SignedIn>
+    {path !== "/dashboard" && (
+      <Link href="/dashboard">
+        <Button variant="outline" size="sm">
+          <LayoutDashboard className="h-4 w-4" />
+          <span className="hidden md:inline ml-2">Dashboard</span>
+        </Button>
+      </Link>
+    )}
+    <UserButton />
+  </SignedIn>
 
-            )}
-          <UserButton />
-        </SignedIn>
+  <SignedOut>
+    <SignInButton>
+      <Button variant="ghost" size="sm">Sign In</Button>
+    </SignInButton>
+    <SignUpButton>
+      <Button variant="primary" size="sm">Get Started</Button>
+    </SignUpButton>
+  </SignedOut>
+</div>
 
-
-        <SignedOut>
-          <SignInButton>
-            <Button variant="ghost" size="sm">Sign In</Button>
-          </SignInButton>
-          <SignUpButton>
-            <Button variant="primary" size="sm" className="whitespace-nowrap">
-              Get Started
-            </Button>
-          </SignUpButton>
-        </SignedOut>
 </div>
        
 
