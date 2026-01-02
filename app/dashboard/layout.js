@@ -156,8 +156,9 @@ const Dashboardlayout = ({ children }) => {
             </div>
           </div>
         </header>
-
-      {children}</div>
+       <main className="mt-16">{children}</main>
+      
+      </div>
     </div>
   );
 };
