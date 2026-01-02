@@ -1,8 +1,5 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   PenTool,
@@ -12,10 +9,14 @@ import {
   X,
   Settings,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { usePathname } from "next/navigation";
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { UserButton } from "@clerk/nextjs";
 
 const sidebarItems = [
   {
@@ -41,84 +42,52 @@ const sidebarItems = [
 ];
 
 const Dashboardlayout = ({ children }) => {
-  const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [draftPost, setDraftPost] = useState(false);
-
-  // Detect draft post (example using localStorage)
-  useEffect(() => {
-    const draft = localStorage.getItem("draft-post");
-    setDraftPost(!!draft);
-  }, []);
-
+  const pathname = usePathname();
   return (
-    <div className="relative min-h-screen bg-slate-900">
-      {/* Mobile Top Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40 flex items-center gap-3 bg-slate-900/80 backdrop-blur border-b border-slate-700 px-4 py-3 lg:hidden">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsSidebarOpen(true)}
-        >
-          <Menu className="h-5 w-5 text-white" />
-        </Button>
-
-        <Image
-          src="/logo.png"
-          alt="Creatr Logo"
-          width={96}
-          height={32}
-          className="h-8 w-auto"
-        />
-      </div>
-
-      {/* Sidebar */}
+    <div className="min-h-screen bg-slate-900 text-white"> 
       <aside
-        className={cn(
-          "fixed top-0 left-0 z-50 h-full w-64 bg-slate-800/60 backdrop-blur border-r border-slate-700 transition-transform duration-300",
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full",
-          "lg:translate-x-0"
+      className={cn(
+          "fixed top-0 left-0 h-full w-64 bg-slate-800/50 backdrop-blur-sm border-r border-slate-700 z-50 transition-transform duration-300 lg:translate-x-0",
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        {/* Sidebar Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-700">
-          <Link href="/">
+          <Link href={"/"} className="flex-shrink-0">
             <Image
               src="/logo.png"
               alt="Creatr Logo"
-              width={120}
-              height={40}
-              className="h-9 w-auto"
+              width={96}
+              height={32}
+              className="h-8 sm:h-10 md:h-11 w-auto object-contain"
             />
           </Link>
-
+          {/* Mobile Close Button */}
           <Button
             variant="ghost"
             size="icon"
+            onClick={()=>setIsSidebarOpen(!isSidebarOpen)}
             className="lg:hidden"
-            onClick={() => setIsSidebarOpen(false)}
           >
-            <X className="h-5 w-5 text-white" />
+            <X className="h-5 w-5" />
           </Button>
-        </div>
-
-        {/* Navigation */}
-        <nav className="p-4 space-y-2">
-          {sidebarItems.map((item) => {
+          </div>
+             
+             <nav className="p-4 space-y-2">
+          {sidebarItems.map((item, index) => {
             const isActive =
               pathname === item.href ||
-              (item.href !== "/dashboard" &&
-                pathname.startsWith(item.href));
+              (item.href !== "/dashboard" && pathname.startsWith(item.href));
 
             return (
               <Link
-                key={item.href}
+                key={index}
                 href={item.href}
                 onClick={() => setIsSidebarOpen(false)}
               >
                 <div
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all group",
+                    "flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group",
                     isActive
                       ? "bg-gradient-to-r from-purple-600/20 to-blue-600/20 border border-purple-500/30 text-white"
                       : "text-slate-300 hover:text-white hover:bg-slate-700/50"
@@ -126,17 +95,16 @@ const Dashboardlayout = ({ children }) => {
                 >
                   <item.icon
                     className={cn(
-                      "h-5 w-5",
+                      "h-5 w-5 transition-colors",
                       isActive
                         ? "text-purple-400"
                         : "text-slate-400 group-hover:text-white"
                     )}
                   />
-
                   <span className="font-medium">{item.title}</span>
 
-                  {/* Draft Badge */}
-                  {item.title === "Create Post" && draftPost && (
+                  {/* Badge for Create Post if draft exists */}
+                  {item.title === "Create Post" && true && (
                     <Badge
                       variant="secondary"
                       className="ml-auto text-xs bg-orange-500/20 text-orange-300 border-orange-500/30"
@@ -150,25 +118,46 @@ const Dashboardlayout = ({ children }) => {
           })}
         </nav>
 
-        {/* Sidebar Footer */}
-        <div className="absolute bottom-4 left-4 right-4">
+   <div className="absolute bottom-4 left-4 right-4">
           <Link href="/dashboard/settings">
             <Button
               variant="outline"
               size="sm"
-              className="w-full justify-start gap-2 text-slate-300 hover:text-white rounded-xl"
+              className="w-full justify-start text-slate-300 hover:text-white rounded-xl p-4"
             >
-              <Settings className="h-4 w-4" />
+              <Settings className="h-4 w-4 mr-2" />
               Settings
             </Button>
           </Link>
         </div>
-      </aside>
 
-      {/* Main Content */}
-      <main className="pt-16 lg:pt-0 lg:ml-64">
-        <div className="p-6">{children}</div>
-      </main>
+
+      </aside>
+    <div className="ml-0 lg:ml-64">
+      <header
+          className="fixed w-full top-0 right-0 z-30 bg-slate-800/80 backdrop-blur-md border-b border-slate-700"
+          // style={{ left: "auto", width: "calc(100% - 16rem)" }}
+        >
+          <div className="flex items-center justify-between px-4 lg:px-8 py-4">
+            {/* Left Side - Mobile Menu + Search */}
+            <div className="flex items-center space-x-4">
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={()=>isSidebarOpen(!isSidebarOpen)}
+                className="lg:hidden"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="flex items-center space-x-4">
+             <UserButton />
+            </div>
+          </div>
+        </header>
+
+      {children}</div>
     </div>
   );
 };
